@@ -157,16 +157,6 @@ namespace FirstApi.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
         [HttpDelete]
         [Route("DeleteByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
