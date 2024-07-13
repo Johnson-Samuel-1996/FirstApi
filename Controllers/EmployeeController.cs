@@ -19,11 +19,6 @@ namespace FirstApi.Controllers
             _context = context;
         }
 
-
-
-
-
-
         [HttpGet]
         [Route("AllEmployee")]
 
@@ -35,20 +30,12 @@ namespace FirstApi.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<Employee>> GetEmployees()
         {
-         var employees = _context.Employees.ToList();
-         return Ok(employees);
+            var employees = _context.Employees.ToList();
+            return Ok(employees);
         }
 
 
-
-
-
-
-
-
-
-        [HttpGet]
-        [Route("GetEmployeeById")]
+        [HttpGet("{id}")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -71,16 +58,8 @@ namespace FirstApi.Controllers
         }
 
 
-
-
-
-
-
-
-
         [HttpGet ]
-        [Route( "GetEmployeeByName")]
-
+        
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -99,18 +78,7 @@ namespace FirstApi.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
         [HttpPost]
-
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -126,11 +94,8 @@ namespace FirstApi.Controllers
         }
 
 
-
-
         [HttpDelete]
         [Route("DeleteById")]
-
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -159,6 +124,7 @@ namespace FirstApi.Controllers
 
         [HttpDelete]
         [Route("DeleteByName")]
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -173,8 +139,11 @@ namespace FirstApi.Controllers
 
             return NoContent();
         }
+
+
         [HttpPut]
         [Route("UpdateById")]
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
