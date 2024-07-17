@@ -14,6 +14,6 @@ namespace FirstApi.Models
         [Required]
         [Range(18,56)]
         public int Age { get; set; }
-        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        public DateTime? CreatedDate { get; set; } = DateTime.Now.Date;
     }
 }

@@ -33,10 +33,17 @@ namespace FirstApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<Employee>> GetEmployees()
+        public ActionResult<IEnumerable<EmployeeDto>> GetEmployees()
         {
          var employees = _context.Employees.ToList();
-         return Ok(employees);
+            var employeesDto = employees.Select(e => new EmployeeDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Age = e.Age,
+
+            }).ToList();
+            return Ok(employeesDto);
         }
 
 
@@ -56,18 +63,28 @@ namespace FirstApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Employee> GetEmployee(int id)
+        public ActionResult<EmployeeDto> GetEmployee(int id)
         {
-            var Employee =_context.Employees.FirstOrDefault(x => x.Id == id);
+            var employee =_context.Employees.FirstOrDefault(x => x.Id == id);
+
+            var employeeDto = new EmployeeDto
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                Age = employee.Age,
+
+            };
+
+
             if (id == 0)
             {
                 return BadRequest();
             }
-            if (Employee == null)
+            if (employee == null)
             {
                 return NotFound();
             }
-            return Ok(Employee);
+            return Ok(employeeDto);
         }
 
 
