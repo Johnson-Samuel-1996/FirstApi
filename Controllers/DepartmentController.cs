@@ -40,14 +40,13 @@ namespace FirstApi.Controllers
             DepartmentName=department.DepartmentName,
             CompanyName=department.CompanyName
             };
-
             if (id == 0)
             {
-                return BadRequest();
+                return BadRequest("0 is not a valid ID.! ");
             }
             if (department == null)
             {
-                return NotFound();
+                return NotFound($"No Department found for the ID : {id}");
             }
             return Ok(dto);
         }
@@ -87,14 +86,14 @@ namespace FirstApi.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteDepartment(int id)
         {
-            var department =_context.Departments.FirstOrDefault(e=>e.DepartmentId==id); 
+            var department =_context.Departments.FirstOrDefault(e=>e.DepartmentId==id);
             if (id == 0)
             {
-                return BadRequest();
+                return BadRequest("0 is not a valid ID.! ");
             }
             if (department == null)
             {
-                return NotFound();
+                return NotFound($"No Department found for the ID : {id}");
             }
             return NoContent();
         }

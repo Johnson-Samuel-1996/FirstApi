@@ -19,7 +19,10 @@ namespace FirstApi.Controllers
             _context = context;
         }
 
+
+
         [HttpGet]
+        
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<EmployeeDto>> GetEmployees()
@@ -38,6 +41,8 @@ namespace FirstApi.Controllers
         }
 
 
+
+
         [HttpGet("{id}")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,11 +54,11 @@ namespace FirstApi.Controllers
             var employee =_context.Employees.FirstOrDefault(x => x.Id == id);
             if (id == 0)
             {
-                return BadRequest();
+                return BadRequest("0 is not a valid ID.! ");
             }
             if (employee == null)
             {
-                return NotFound();
+                return NotFound($"No Employee found for the ID : {id}");
             }
             var dto = new EmployeeDto { 
             Name = employee.Name,
@@ -62,6 +67,7 @@ namespace FirstApi.Controllers
             };
             return Ok(dto);
         }
+
 
 
         [HttpPost]
@@ -91,21 +97,19 @@ namespace FirstApi.Controllers
         public IActionResult DeleteById(int id)
 
         {
+            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
             if (id == 0)
             {
-                return NotFound();
+                return BadRequest("0 is not a valid ID.! ");
             }
-            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
-            
             if (employee == null)
             {
-                return BadRequest();
+                return NotFound($"No Employee found for the ID : {id}");
             }
             _context.Employees.Remove(employee);
             _context.SaveChanges();
             return NoContent();
         }
-
 
 
 
@@ -125,19 +129,6 @@ namespace FirstApi.Controllers
             _context.SaveChanges();
             return Ok(dto);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }
