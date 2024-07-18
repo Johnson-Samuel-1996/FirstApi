@@ -20,49 +20,33 @@ namespace FirstApi.Controllers
         }
 
         [HttpGet]
-        [Route("AllEmployee")]
-
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<EmployeeDto>> GetEmployees()
         {
          var employees = _context.Employees.ToList();
-            var employeesDto = employees.Select(e => new EmployeeDto
+         var dto = employees.Select(e=> new EmployeeDto
             {
-                Id = e.Id,
-                Name = e.Name,
-                Age = e.Age,
-
-            }).ToList();
-            return Ok(employeesDto);
+                    Name = e.Name,
+                    Age = e.Age,
+                    DepartmentId = e.DepartmentId
+         }
+                ).ToList();
+            
+           
+            return Ok(dto);
         }
 
 
         [HttpGet("{id}")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<EmployeeDto> GetEmployee(int id)
         {
             var employee =_context.Employees.FirstOrDefault(x => x.Id == id);
-
-            var employeeDto = new EmployeeDto
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-
-            };
-
-
             if (id == 0)
             {
                 return BadRequest();
@@ -71,27 +55,12 @@ namespace FirstApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(employeeDto);
-        }
-
-
-        [HttpGet ]
-        
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Employee> GetEmployee(string name)
-        {
-            var Employee = _context.Employees.FirstOrDefault(e => e.Name == name);
-            if (Employee == null)
-            {
-                return NotFound();
-            }
-            return Ok(Employee);
+            var dto = new EmployeeDto { 
+            Name = employee.Name,
+            Age = employee.Age,
+            DepartmentId = employee.DepartmentId
+            };
+            return Ok(dto);
         }
 
 
@@ -99,26 +68,25 @@ namespace FirstApi.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Employee> PostEmployee([FromBody]Employee employee)
+        public ActionResult<EmployeeDto> PostEmployee([FromBody]EmployeeDto employeeDto)
         {
+            var employee = new Employee
+            {
+                Name = employeeDto.Name,
+                Age = employeeDto.Age,
+                DepartmentId = employeeDto.DepartmentId
+
+            };
             _context.Employees.Add(employee);
             _context.SaveChanges();
-            return Ok();
+            return Ok(employeeDto);
         }
 
 
-        [HttpDelete]
-        [Route("DeleteById")]
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpDelete("{id}")]
+        
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteById(int id)
 
@@ -139,39 +107,23 @@ namespace FirstApi.Controllers
         }
 
 
-        [HttpDelete]
-        [Route("DeleteByName")]
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteByName(string name)
-        {
-            var employee = _context.Employees.FirstOrDefault(e => e.Name == name);
-            _context.Employees.Remove(employee);
-            _context.SaveChanges();
-
-            return NoContent();
-        }
 
 
         [HttpPut]
-        [Route("UpdateById")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateEmployee([FromBody] Employee employee)
+        public ActionResult<EmployeeDto> UpdateEmployee([FromBody] Employee employee)
         {
+            var dto = new EmployeeDto
+            {
+                Name = employee.Name,
+                Age = employee.Age,
+                DepartmentId = employee.DepartmentId,
+            };
             _context.Update(employee);
             _context.SaveChanges();
-            return NoContent();
+            return Ok(dto);
         }
 
 

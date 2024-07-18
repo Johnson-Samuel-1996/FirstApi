@@ -6,7 +6,7 @@ namespace FirstApi.Models
 {
     public class Employee
     {
-        [Key]
+       
         public int Id { get; set; }
         [Required]
         [StringLength(25)]
@@ -14,6 +14,9 @@ namespace FirstApi.Models
         [Required]
         [Range(18,56)]
         public int Age { get; set; }
-        public DateTime? CreatedDate { get; set; } = DateTime.Now.Date;
+        public int DepartmentId { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.Today;
+        public Department Department { get;set; }
     }
 }
