@@ -123,21 +123,34 @@ namespace FirstApi.Controllers
 
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<EmployeeDto> UpdateEmployee([FromBody] Employee employee)
+        public ActionResult<EmployeeDto> UpdateEmployee(int id,[FromBody] EmployeeDto employeeDto)
         {
-            var dto = new EmployeeDto
+            var employee =_context.Employees.FirstOrDefault(e=>e.Id==id);
+            if (id == 0)
             {
-                Name = employee.Name,
-                Age = employee.Age,
-                DepartmentId = employee.DepartmentId,
-            };
-            _context.Update(employee);
+                return BadRequest("0 is not a valid ID.! ");
+            }
+            if (employee == null)
+            {
+                return NotFound($"No Employee found for the ID : {id}");
+            }
+            employee.Name = employeeDto.Name;
+            employee.Age = employeeDto.Age;
+            if (employeeDto.DepartmentId != 0)
+            {
+                employee.DepartmentId = employeeDto.DepartmentId;
+            }
+            if (employeeDto.DepartmentId == 0)
+            {
+                employeeDto.DepartmentId = employee.DepartmentId;
+            }
+                _context.Update(employee);
             _context.SaveChanges();
-            return Ok(dto);
+            return Ok(employeeDto);
         }
 
     }

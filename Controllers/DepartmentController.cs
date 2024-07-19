@@ -68,15 +68,28 @@ namespace FirstApi.Controllers
             return Ok(departmentDto);
         }
 
-        [HttpPut]
-        public ActionResult<DepartmentDto> Update([FromBody] DepartmentDto dto)
+        [HttpPut("{id}")]
+        public ActionResult<DepartmentDto> Update(int id,[FromBody] DepartmentDto dto)
         {
-            var department = new Department
+            if(dto.DepartmentId!=0)
             {
-                DepartmentId = dto.DepartmentId,
-                DepartmentName= dto.DepartmentName,
-                CompanyName= dto.CompanyName
-            };
+                if(id != dto.DepartmentId)
+                {
+                    return BadRequest("You can't change the Depatment ID.!");
+                }
+
+            }
+            var department = _context.Departments.FirstOrDefault(e => e.DepartmentId == id);
+            if (department == null)
+            {
+                return NotFound($"No Department found for the ID : {id}");
+            }
+            department.DepartmentName = dto.DepartmentName;
+            department.CompanyName = dto.CompanyName;
+            if (dto.DepartmentId == 0)
+            {
+                dto.DepartmentId = id;
+            }
 
             _context.Update(department);
             _context.SaveChanges();
