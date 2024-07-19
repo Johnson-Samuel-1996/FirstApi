@@ -80,14 +80,6 @@ namespace FirstApi.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<EmployeeDto> PostEmployee([FromBody]EmployeeDto employeeDto)
         {
-            if (employeeDto.DepartmentId == 0)
-            {
-                return BadRequest("0 is not a valid id.!");
-            }
-            //if(employeeDto ==null)
-            //{
-            //    return NotFound($"There is no department with ID : {employeeDto.DepartmentId}");
-            //}
             var employee = new Employee
             {
                 Name = employeeDto.Name,
