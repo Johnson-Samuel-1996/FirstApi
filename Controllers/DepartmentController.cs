@@ -1,6 +1,7 @@
 ﻿using FirstApi.data;
 using FirstApi.Dto;
 using FirstApi.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -27,7 +28,7 @@ namespace FirstApi.Controllers
                 DepartmentName = e.DepartmentName,
                 CompanyName=e.CompanyName
             }).ToList();
-           
+
             return Ok(departmentDto);
         }
 
@@ -109,6 +110,43 @@ namespace FirstApi.Controllers
                 return NotFound($"No Department found for the ID : {id}");
             }
             return NoContent();
+        }
+
+
+        [HttpPatch("{id}")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DepartmentDto> PatchDepartment(int id, [FromBody] JsonPatchDocument<DepartmentDto> departmentPatch)
+        {
+            var department = _context.Departments.FirstOrDefault(e => e.DepartmentId == id);
+
+            if (id == 0)
+            {
+                return BadRequest("0 is not a valid ID.! ");
+            }
+            if (department == null)
+            {
+                return NotFound($"No Department found for the ID : {id}");
+            }
+
+            var dto = new DepartmentDto
+            {
+               DepartmentId = department.DepartmentId,
+               DepartmentName = department.DepartmentName,
+               CompanyName = department.CompanyName
+
+            };
+
+
+            departmentPatch.ApplyTo(dto);
+
+            department.DepartmentName = dto.DepartmentName;
+                department.CompanyName= dto.CompanyName;
+            department.DepartmentId = dto.DepartmentId;
+            _context.Update(department);
+            _context.SaveChanges();
+            return Ok(dto);
         }
     }
 }

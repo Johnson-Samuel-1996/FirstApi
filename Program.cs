@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 #region Connection String
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer 

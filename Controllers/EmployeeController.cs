@@ -6,6 +6,7 @@ using FirstApi.Dto;
 using System.ComponentModel.DataAnnotations;
 using FirstApi.data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace FirstApi.Controllers
 {
@@ -35,8 +36,8 @@ namespace FirstApi.Controllers
                     DepartmentId = e.DepartmentId
          }
                 ).ToList();
-            
-           
+
+
             return Ok(dto);
         }
 
@@ -151,6 +152,44 @@ namespace FirstApi.Controllers
                 _context.Update(employee);
             _context.SaveChanges();
             return Ok(employeeDto);
+        }
+
+
+
+
+        [HttpPatch("{id}")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<EmployeeDto> PatchEmployee(int id, [FromBody] JsonPatchDocument<EmployeeDto> employeePatch)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
+
+            if (id == 0)
+            {
+                return BadRequest("0 is not a valid ID.! ");
+            }
+            if (employee == null)
+            {
+                return NotFound($"No Employee found for the ID : {id}");
+            }
+
+            var dto = new EmployeeDto
+            {
+                Name = employee.Name,
+                Age = employee.Age,
+                DepartmentId = employee.DepartmentId
+            };
+           
+           
+            employeePatch.ApplyTo(dto);
+
+            employee.Name = dto.Name;
+            employee.Age = dto.Age;
+            employee.DepartmentId = dto.DepartmentId;
+            _context.Update(employee);
+            _context.SaveChanges();
+            return Ok(dto);
         }
 
     }
